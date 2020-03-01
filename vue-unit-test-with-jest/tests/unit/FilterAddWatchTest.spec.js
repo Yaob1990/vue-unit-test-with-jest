@@ -40,10 +40,21 @@ describe('FilterTest.vue', () => {
     // toggleShow默认值为true
     expect(truediv.isVisible()).toBe(true)
     expect(falsediv.isVisible()).toBe(false)
+  })
+
+  it('v-show test false', () => {
+    wrapper.setData({
+      toggleShow: false
+    })
+    // true时显示的div
+    const truediv = wrapper.find('.text.format')
+    // false时显示的div
+    const falsediv = wrapper.find('.text.noformat')
     // 设置为false
-    wrapper.vm.toggleShow = false
-    expect(truediv.isVisible()).toBe(false)
-    expect(falsediv.isVisible()).toBe(true)
+    wrapper.vm.$nextTick(() => {
+      expect(truediv.isVisible()).toBe(false)
+      expect(falsediv.isVisible()).toBe(true)
+    })
   })
 
   // 测试内容：filter----filter不能通过wrapper或者vm获取，只能通过组件获取
@@ -75,7 +86,11 @@ describe('FilterTest.vue', () => {
   // changeShow()函数被调用时，能正确执行
   it('called changeShow()', () => {
     // 手动将变量的值设置为false,默认值是true
-    wrapper.vm.toggleShow = false
+    // 这里不涉及界面的更新，可以这样写，否则还是要写成 setData 形式
+    wrapper.vm.toggleShow = false   //  原来写法
+    wrapper.setData({
+      toggleShow: false
+    })
     // 执行函数
     wrapper.vm.changeShow()
     // 期望结果
@@ -90,15 +105,23 @@ describe('FilterTest.vue', () => {
   // 更改watch的data的值，断言操作是否与预期相同
   it('watch test', () => {
     // mock掉console.log
-    const spy = jest.spyOn(console,'log')
+    const spyFn = jest.spyOn(global.console, 'log')
     // 手动将变量的值设置为false,默认值是true
-    wrapper.vm.toggleShow = '自定义'
+    // wrapper.vm.toggleShow = '自定义'
+    wrapper.setData({
+      toggleShow: false
+    })
     // 断言函数是否执行
-    expect(spy).toBeCalled()
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith('自定义')
+    // 这里又要写异步的写法！watch 是在下一次更新周期触发的！
+    // https://alexjover.com/blog/test-computed-properties-and-watchers-in-vue-js-components-with-jest/
+    wrapper.vm.$nextTick(() => {
+      expect(spyFn).toHaveBeenCalled()
+      expect(spyFn).toHaveBeenCalledTimes(1)
+      expect(spyFn).toHaveBeenCalledWith(false)
+    })
+
     // 清除掉mock
-    spy.mockClear()
+    spyFn.mockClear()
   })
 
   // 测试内容：snapshot->概括的测试DOM结构

@@ -28,7 +28,9 @@ describe('Header.vue', () => {
     expect(wrapper.vm.name).toBe('admin')
     expect(wrapper.vm.collapse).toBeTruthy() // 函数checkWidth()在测试环境下的值一致都是true
     wrapper.vm.name = 'holy'
-    expect(wrapper.find('.el-dropdown-link').text()).toBe('holy')
+    wrapper.vm.$nextTick(()=>{
+      expect(wrapper.find('.el-dropdown-link').text()).toBe('holy')
+    })
   })
 
   // 测试内容：data中的函数checkWidth()

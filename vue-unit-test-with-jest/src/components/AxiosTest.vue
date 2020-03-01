@@ -21,7 +21,7 @@ export default {
         .get('users/')
         .then(res => {
           this.usersInfo = res.data
-          return res
+          // return res
         })
         .catch(e => e)
     }

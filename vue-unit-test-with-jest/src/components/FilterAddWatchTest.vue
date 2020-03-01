@@ -36,8 +36,8 @@ export default {
   },
   // watch 的test用例
   watch: {
-    toggleShow(newValue,oldValue){
-      console.log(newValue)      
+    toggleShow (newValue, oldValue) {
+      console.log(newValue)
     }
   }
 }
